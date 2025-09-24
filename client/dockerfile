@@ -1,24 +1,27 @@
-
+# Dockerfile
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Copy package files and install deps (including devDependencies needed for build)
+COPY package*.json ./
+RUN npm ci
 
-COPY package.json package-lock.json* ./
-
-
-RUN npm ci --only=production=false
-
+# Copy source and build
 COPY . .
 RUN npm run build
 
+# Normalize build output to /app/out (supports projects that output 'dist' or 'build')
+RUN if [ -d /app/dist ]; then \
+      rm -rf /app/out && cp -r /app/dist /app/out; \
+    elif [ -d /app/build ]; then \
+      rm -rf /app/out && cp -r /app/build /app/out; \
+    else \
+      echo "ERROR: build produced no 'dist' or 'build' directory. Contents of /app:" && ls -la /app && exit 1; \
+    fi
 
-FROM nginx:alpine
-
+# Final stage: nginx
+FROM nginx:alpine AS runtime
 RUN rm -rf /usr/share/nginx/html/*
-
-COPY --from=build /app/dist /usr/share/nginx/html
-
+COPY --from=build /app/out /usr/share/nginx/html
 EXPOSE 80
-
-# Use the default nginx command
 CMD ["nginx", "-g", "daemon off;"]
