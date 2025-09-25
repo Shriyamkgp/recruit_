@@ -1,14 +1,34 @@
-version: "3.8"
-
 services:
   backend:
-    build: ./server
+    build:
+      context: .
+      dockerfile: ./docker/server.dockerfile
+    image: recruit_backend
     ports:
       - "5000:5000"
+    volumes:
+      - type: bind
+        source: ./server
+        target: /server
+      - type: volume
+        source: server_node_modules
+        target: /server/node_modules
 
   frontend:
-    build: ./client
+    build:
+      context: .
+      dockerfile: ./docker/client.dockerfile
+    image: recruit_frontend
     ports:
-      - "3000:80"
-    depends_on:
-      - backend
+      - "8080:8080"
+    volumes:
+      - type: bind
+        source: ./client
+        target: /client
+      - type: volume
+        source: client_node_modules
+        target: /client/node_modules
+
+volumes:
+  server_node_modules:
+  client_node_modules:

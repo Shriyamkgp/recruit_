@@ -1,9 +1,9 @@
-import { TFunction } from "react-i18next";
+import { FormInstance } from "antd";
+
 export interface ContactProps {
   title: string;
   content: string;
   id: string;
-  t: TFunction;
 }
 
 export interface ValidationTypeProps {
