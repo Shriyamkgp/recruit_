@@ -20,7 +20,7 @@ services:
       dockerfile: ./docker/client.dockerfile
     image: recruit_frontend
     ports:
-      - "8080:8080"
+      - "3000:3000"
     volumes:
       - type: bind
         source: ./client
@@ -28,6 +28,9 @@ services:
       - type: volume
         source: client_node_modules
         target: /client/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=0
 
 volumes:
   server_node_modules:
