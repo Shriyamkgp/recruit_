@@ -18,27 +18,29 @@ export class index extends Component {
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Home</NavigationMenuTrigger>
+              <NavigationMenuTrigger>
+                <Link to="/">Home</Link>
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <NavigationMenuLink>
-                  <Link to="/">Home Page Summary + Link</Link>
-                </NavigationMenuLink>
+                <NavigationMenuLink>Home Page Summary</NavigationMenuLink>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>About</NavigationMenuTrigger>
+              <NavigationMenuTrigger>
+                <Link to="/about">About</Link>
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <NavigationMenuLink>Link</NavigationMenuLink>
+                <NavigationMenuLink>Get To Know Us</NavigationMenuLink>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Sign In</NavigationMenuTrigger>
+              <NavigationMenuTrigger>
+                <Link to="/login">Sign In</Link>
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <NavigationMenuLink>
-                  <Link to="/login">Already a User?</Link>
-                </NavigationMenuLink>
+                <NavigationMenuLink>Already a User?</NavigationMenuLink>
               </NavigationMenuContent>
             </NavigationMenuItem>
           </NavigationMenuList>
