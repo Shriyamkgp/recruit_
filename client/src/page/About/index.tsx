@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Header from "@/components/Header";
 import "./index.css";
+import { Link } from "react-router-dom";
 
 export class index extends Component {
   render() {
@@ -42,9 +43,11 @@ export class index extends Component {
                 </p>
               </div>
             </div>
-            <a href="#" className="cta-button">
-              Find Talent
-            </a>
+            <Link to="../hrf">
+              <a href="" className="cta-button">
+                Find Talent
+              </a>
+            </Link>
           </section>
 
           <section className="section" id="applicants">
@@ -69,9 +72,11 @@ export class index extends Component {
                 </p>
               </div>
             </div>
-            <a href="#" className="cta-button">
-              Find a Job
-            </a>
+            <Link to="../applicant">
+              <a href="#" className="cta-button">
+                Find Jobs
+              </a>
+            </Link>
           </section>
         </div>
       </>

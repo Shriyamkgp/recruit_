@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
+import { Link } from "react-router-dom";
 
 import {
   Accordion,
@@ -71,11 +72,13 @@ export class index extends Component {
         </div>
         <div className="flex gap-4 margin-30">
           <Button asChild>
-            <a href="/.">Find Job</a>
+            <Link to="./applicant">Find Job</Link>
           </Button>
-          <Button variant="secondary">
-            <a href="#">Create Job</a>
-          </Button>
+          <Link to="../hrf">
+            <Button variant="secondary">
+              <a href="#">Find Talent</a>
+            </Button>
+          </Link>
         </div>
       </>
     );
