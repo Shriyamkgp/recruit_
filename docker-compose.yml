@@ -20,7 +20,7 @@ services:
       dockerfile: ./docker/client.dockerfile
     image: recruit_frontend
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
       - type: bind
         source: ./client
