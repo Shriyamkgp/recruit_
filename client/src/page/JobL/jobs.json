@@ -1,0 +1,29 @@
+[
+  {
+    "id": "job-101",
+    "title": "Senior Frontend Developer",
+    "company": "Tech Innovators Inc.",
+    "location": "San Francisco, CA",
+    "salary": "₹1,50,000 - ₹1,80,000",
+    "description": "We are looking for a skilled Senior Frontend Developer to lead our next-generation web applications. Must have expertise in React and modern JavaScript.",
+    "postedAt": "2025-09-29T10:00:00Z"
+  },
+  {
+    "id": "job-102",
+    "title": "Full Stack Engineer",
+    "company": "Web Solutions Co.",
+    "location": "Remote",
+    "salary": "₹1,30,000 - ₹1,60,000",
+    "description": "Join our team as a Full Stack Engineer to work on exciting projects using Node.js, Express, and a PostgreSQL database. Remote work is available.",
+    "postedAt": "2025-09-28T14:30:00Z"
+  },
+  {
+    "id": "job-103",
+    "title": "UI/UX Designer",
+    "company": "Creative Minds Studio",
+    "location": "New York, NY",
+    "salary": "₹90,000 - ₹1,10,000",
+    "description": "We need a talented UI/UX Designer to create stunning user interfaces and seamless user experiences. Adobe XD and Figma skills are a must.",
+    "postedAt": "2025-09-27T09:15:00Z"
+  }
+]

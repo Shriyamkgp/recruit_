@@ -1,20 +1,14 @@
 import React from "react";
-import Home from "./page/Home";
-import LoginF from "./page/LoginF";
-import About from "./page/About";
-import ApplicantF from "./page/ApplicantF";
-import HRF from "./page/HRF";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { routes } from "./config/routes.jsx";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<LoginF />} />
-        <Route path="/applicant" element={<ApplicantF />} />
-        <Route path="/hrf" element={<HRF />} />
+        {routes.map((route, index) => (
+          <Route key={index} path={route.path} element={route.element} />
+        ))}
       </Routes>
     </>
   );

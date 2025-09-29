@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Header from "./Header";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -23,14 +25,9 @@ const formSchema = z.object({
   }),
 });
 
-// 2. Define a submit handler.
-function onSubmit(values: z.infer<typeof formSchema>) {
-  // Do something with the form values.
-  // ✅ This will be type-safe and validated.
-  console.log(values);
-}
-
 export function ApplicantForm() {
+  const navigate = useNavigate();
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,6 +35,14 @@ export function ApplicantForm() {
       username: "",
     },
   });
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+    navigate("../joblist");
+  }
 
   return (
     <>
