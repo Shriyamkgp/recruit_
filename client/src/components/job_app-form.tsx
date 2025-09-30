@@ -3,9 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Header from "./Header";
 import { Button } from "@/components/ui/button";
-import Header from "@/components/Header";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -16,9 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// Header and Label removed as they were not used in the application.
+import { Label } from "@/components/ui/label";
 
-// 1. Define the complete form schema for all fields
 const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -36,37 +36,35 @@ const formSchema = z.object({
 
 type JobApplicationSchema = z.infer<typeof formSchema>;
 
-// Renamed and exported as HRForm as requested
-export function HRForm() {
-  // Correctly call the hook at the top level
+interface JobDetailsProps {
+  jobId_ai?: string;
+}
+
+export function JobDetailF({ jobId_ai }: JobDetailsProps) {
   const navigate = useNavigate();
-
-  // Console log to verify the prop value on render
-
-  // 1. Define your form and default values based on the updated schema
-  const form = useForm<JobApplicationSchema>({
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      fullName: "",
-      company: "",
-      email: "",
-      resumeFile: undefined,
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: JobApplicationSchema) {
-    console.log("Form Submitted Successfully! Form Values:", values);
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+
+    if (jobId_ai) {
+      navigate(`/ai-${jobId_ai}`);
+    }
   }
 
   return (
     <>
-      <Header />
-      <div className="max-w-md mx-auto p-8 bg-white shadow-xl rounded-xl">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          Job Application (HR Form)
-        </h2>
+      <div className="">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* 1. USERNAME FIELD (Unique FormField) */}
@@ -131,6 +129,38 @@ export function HRForm() {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 5. UPLOAD RESUME FIELD (Unique FormField with custom file handling) */}
+            <FormField
+              control={form.control}
+              name="resumeFile"
+              // Destructure the field object and explicitly set 'value' to undefined
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Upload Resume</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...fieldProps}
+                      // For file inputs, the 'value' prop must be undefined for the input to work correctly.
+                      value={undefined}
+                      type="file"
+                      onChange={(event) => {
+                        // This handles saving the actual File object to the form state
+                        onChange(
+                          event.target.files ? event.target.files[0] : null
+                        );
+                      }}
+                      accept=".pdf"
+                      className="cursor-pointer"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Please upload your resume as a single .pdf file.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

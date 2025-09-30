@@ -6,6 +6,9 @@ import LoginF from "../page/LoginF";
 import ApplicantF from "../page/ApplicantF";
 import HRF from "../page/HRF";
 import JobL from "../page/JobL";
+import JobDetails from "../page/JobDetails";
+import jobs from "../page/JobL/jobs.json";
+import AiInterview from "../page/AiInterview";
 
 export const routes = [
   { path: "/", element: <Home /> },
@@ -14,4 +17,13 @@ export const routes = [
   { path: "/applicant", element: <ApplicantF /> },
   { path: "/hrf", element: <HRF /> },
   { path: "/joblist", element: <JobL /> },
+  { path: "/jobdetail", element: <JobDetails /> },
+  ...jobs.map((job) => ({
+    path: `/${job.id}`,
+    element: <JobDetails jobId={job.id} />,
+  })),
+  ...jobs.map((job) => ({
+    path: `/ai-${job.id}`,
+    element: <AiInterview jobId={job.id} />,
+  })),
 ];
