@@ -23,6 +23,14 @@ const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
+  fullName: z.string().min(1, {
+    message: "Full Name is required.",
+  }),
+  email: z.string().email({
+    message: "Invalid email address.",
+  }),
+  // For file upload, we use z.any() as the value will be a File object
+  resumeFile: z.any().optional(),
 });
 
 export function ApplicantForm() {
@@ -47,9 +55,13 @@ export function ApplicantForm() {
   return (
     <>
       <Header />
-      <div className="mx-auto w-full max-w-md pt-8 border rounded-lg p-4 shadow color-border">
+      <div className="max-w-md mx-auto p-8 bg-white shadow-xl rounded-xl">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          New Applicant Registration
+        </h2>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* 1. USERNAME FIELD (Unique FormField) */}
             <FormField
               control={form.control}
               name="username"
@@ -57,25 +69,82 @@ export function ApplicantForm() {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="(Displayed on Console)" {...field} />
+                    <Input placeholder="Displayed on Console" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
                   <FormMessage />
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Email" />
-                  </FormControl>
-                  <FormDescription>College Email Prefered</FormDescription>
-                  <FormLabel>Upload Resume</FormLabel>
-                  <FormControl>
-                    <Input id=".pdf" type="file" />
-                  </FormControl>
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+
+            {/* 2. FULL NAME FIELD (Unique FormField) */}
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 4. EMAIL FIELD (Unique FormField) */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Enter your Email Address"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 5. UPLOAD RESUME FIELD (Unique FormField with custom file handling) */}
+            <FormField
+              control={form.control}
+              name="resumeFile"
+              // Destructure the field object and explicitly set 'value' to undefined
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Upload Resume</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...fieldProps}
+                      // For file inputs, the 'value' prop must be undefined for the input to work correctly.
+                      value={undefined}
+                      type="file"
+                      onChange={(event) => {
+                        // This handles saving the actual File object to the form state
+                        onChange(
+                          event.target.files ? event.target.files[0] : null
+                        );
+                      }}
+                      accept=".pdf"
+                      className="cursor-pointer"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Please upload your resume as a single .pdf file.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full">
+              Submit Application
+            </Button>
           </form>
         </Form>
       </div>

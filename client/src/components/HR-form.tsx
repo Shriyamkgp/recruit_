@@ -31,7 +31,7 @@ const formSchema = z.object({
     message: "Invalid email address.",
   }),
   // For file upload, we use z.any() as the value will be a File object
-  resumeFile: z.any().optional(),
+  jobdescriptionFile: z.any().optional(),
 });
 
 type JobApplicationSchema = z.infer<typeof formSchema>;
@@ -51,7 +51,7 @@ export function HRForm() {
       fullName: "",
       company: "",
       email: "",
-      resumeFile: undefined,
+      jobdescriptionFile: undefined,
     },
   });
 
@@ -131,6 +131,38 @@ export function HRForm() {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 5. UPLOAD JOB DESCRIPTION FIELD (Unique FormField with custom file handling) */}
+            <FormField
+              control={form.control}
+              name="jobdescriptionFile"
+              // Destructure the field object and explicitly set 'value' to undefined
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Upload Job Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...fieldProps}
+                      // For file inputs, the 'value' prop must be undefined for the input to work correctly.
+                      value={undefined}
+                      type="file"
+                      onChange={(event) => {
+                        // This handles saving the actual File object to the form state
+                        onChange(
+                          event.target.files ? event.target.files[0] : null
+                        );
+                      }}
+                      accept=".pdf"
+                      className="cursor-pointer"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Please upload your resume as a single .pdf file.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
