@@ -15,10 +15,10 @@ export async function interviewAgent(prompt?: string) {
     prompt = "Just say 'No Prompt Provided'";
   }
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-pro",
+    model: "gemini-2.5-flash-lite",
     contents: prompt,
   });
-  console.log(response.text);
+  return response.text;
 }
 
 export default interviewAgent;
