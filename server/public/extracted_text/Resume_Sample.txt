@@ -1,0 +1,88 @@
+ACADEMIC DETAILS
+Year
+2022
+2018
+2016
+
+Degree / Board
+B.Tech in Computer Science & Engineering
+CBSE XII Board
+CBSE X Board
+
+Institute
+GPA / Marks(%)
+Indian Institute of Technology, Delhi
+8.84/10
+Jayshree Periwal High School, Jaipur
+96.4%
+Apeejay Public School, Jalandhar
+10/10
+
+SCHOLASTIC ACHIEVEMENTS
+• Teaching Assistant: Mentoring 400+ students in Data Structures and assisting instructors in course evaluation
+(2022)
+• Foreign Exchange Program: Selected to represent institute at City University of Hong Kong from 100+ applicants (2020)
+• National Talent Search Examination: Conferred with scholarship given by NCERT after nationwide 2-stage process (2016)
+• Apeejay Talent Search Examination Scholarship: Bagged 7th position all over India across Apeejay Schools (2016)
+
+EMPLOYMENT
+• Squarepoint Capital, Bengaluru: Software Developer
+
+(June, 2022 - Present)
+- Designing, building and maintaining software infrastructure which connects the firm to global markets at a high speed
+
+INTERNSHIPS
+• Huawei Technologies, Bengaluru: Framework for HarmonyOS
+(May, 2021 - July, 2021)
+- Developed part of framework for easy adoption and transition of Android developers to Huawei’s new Operating System
+- Implemented an Android ViewGroup subclass for HarmonyOS and tested its functioning via unit and functional tests
+Received Star of the Month award for dedication and perseverance for contribution in Harmony Ecosystem Development
+
+PROJECTS
+• Transfer Learning for Text Generation (B Tech Project): Prof Parag Singla
+(August, 2021 – May,2022 )
+- Working on transfer learning across languages for generation with focus on low and medium resource languages
+- Experimenting with fine-tuning language models like GPT2, BERT to extend them to non-English language generation
+• Applying Deep RL to Cache Bandwidth Partitioning: Prof PR Panda
+(May, 2020 - July, 2020)
+- Devised a Deep Q Learning based Algorithm to dynamically update processor's cache bandwidth allocation priorities
+- Experimented with various reward functions and input features to model tradeoff between fairness and performance
+Got Letter of Recommendation from professor for excellent performance and contributions to ongoing research
+(March, 2021 - April, 2021)
+• Course Management System (Databases): Prof Maya Ramanath
+- Built backend on 80MB sized data-set from University of Wisconsin consisting of 11 tables with over 10 lakh tuples
+- Implemented functionality around registration, courses, class schedules and grades for registrar, instructors and students
+• Priority Scheduling and User Level Thread Library (Operating Systems): Prof Kolin Paul (March, 2021 - April, 2021)
+- Programmed priority scheduling of threads and priority allocation of locks, semaphores and conditional variables on PintOS
+- Implemented priority donation on locks to handle cases of priority inversion in threads even for multiple/nested donations
+- Built user-level thread library with FIFO scheduling and support for locks, yielding and thread preemption
+(April, 2021)
+• Crout Matrix Decomposition (Parallel-Distributed Programming): Prof Soham Chakraborty
+- Implemented parallel versions of Crout LU decomposition via OpenMP, MPI and compared their performance with each other
+- Used sections and ’parallel for’ constructs in OpenMP and achieved up to 3.3x speedup for square matrix size of 3000
+(November, 2020)
+• Parallel File Download (Computer Networks): Prof Aaditeshwar Seth
+- Developed multi-threaded file downloader which fetches packets from multiple servers with dynamic load balancing
+- Achieved up to 29x speedup in download times with 40 threads and optimized code for fault tolerance in network failures
+(October, 2020- November, 2020)
+• Frequent Itemset and Indexing (Data Mining): Prof Sayan Ranu
+- Implemented Apriori Algorithm and FP Tree in Python to mine frequent itemsets from retail database with 100% accuracy
+- Evaluated behavior of hierarchical space partitioning techniques, R star-tree and LSH, on high dimensional data
+
+TECHNICAL SKILLS
+• Programming Languages: C/C++, Java, Python, PostgreSQL, SML, Ocaml, Prolog, Shell, Lex, Yacc, LaTex
+• Softwares/Libraries: Tensorflow, Pytorch, Pandas, Matplotlib, OpenMP, MPI, Git, Wireshark, Android Studio, Gem5
+
+EXTRA CURRICULAR ACTIVITIES
+• Mentor: Assisted fresher s in English, resolved their issues and helped coordinators in freshers' events
+(2020-2021)
+• Literary Club: Part of 16 member team as Hostel Representative to organize literary events in the institute & hostel (2019-2020)
+• NSS Volunteer: Taught Mathematics and made board game to raise awareness about the right to vote
+(2019)
+
+COURSES DONE
+Operating Systems, Parallel and Distributed Programming, Computer Networks, Compiler Optimization, Database Management,
+Data Mining, Principles of Artificial Intelligence, Analysis and Design Of Algorithms, Data Structures and Algorithms, Design
+Practices, Discrete Mathematics, Probability and Stochastic Processes, Applied Game Theory, Macro Economics
+
+

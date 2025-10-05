@@ -26,11 +26,13 @@ const formSchema = z.object({
   fullName: z.string().min(1, {
     message: "Full Name is required.",
   }),
-  company: z.string().optional(),
   email: z.string().email({
     message: "Invalid email address.",
   }),
   // For file upload, we use z.any() as the value will be a File object
+  salary: z.string().min(1, {
+    message: "Salary Expectation is required.",
+  }),
   resumeFile: z.any().optional(),
 });
 
@@ -47,6 +49,9 @@ export function JobDetailF({ jobId_ai }: JobDetailsProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      fullName: "",
+      email: "",
+      resumeFile: undefined,
     },
   });
 
@@ -56,6 +61,8 @@ export function JobDetailF({ jobId_ai }: JobDetailsProps) {
 
     // ✅ This will be type-safe and validated.
     console.log(values);
+
+    localStorage.setItem(`${jobId_ai}`, true as unknown as string);
 
     if (jobId_ai) {
       navigate(`/ai-${jobId_ai}`);
@@ -97,25 +104,7 @@ export function JobDetailF({ jobId_ai }: JobDetailsProps) {
               )}
             />
 
-            {/* 3. COMPANY FIELD (Unique FormField) */}
-            <FormField
-              control={form.control}
-              name="company"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Company</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Your current company (optional)"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* 4. EMAIL FIELD (Unique FormField) */}
+            {/* 3. EMAIL FIELD (Unique FormField) */}
             <FormField
               control={form.control}
               name="email"
@@ -134,14 +123,32 @@ export function JobDetailF({ jobId_ai }: JobDetailsProps) {
               )}
             />
 
-            {/* 5. UPLOAD RESUME FIELD (Unique FormField with custom file handling) */}
+            {/* 4. COMPANY FIELD (Unique FormField) */}
+            <FormField
+              control={form.control}
+              name="salary"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Salary Expectation</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Your current company (optional)"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* 5. Select resume from the Uploaded file) */}
             <FormField
               control={form.control}
               name="resumeFile"
               // Destructure the field object and explicitly set 'value' to undefined
               render={({ field: { value, onChange, ...fieldProps } }) => (
                 <FormItem>
-                  <FormLabel>Upload Resume</FormLabel>
+                  <FormLabel>Select Resume</FormLabel>
                   <FormControl>
                     <Input
                       {...fieldProps}
