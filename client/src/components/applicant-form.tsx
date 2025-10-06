@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Header from "./Header";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -16,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({

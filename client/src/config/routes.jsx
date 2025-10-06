@@ -8,7 +8,8 @@ import HRF from "../page/HRF";
 import JobL from "../page/JobL";
 import JobDetails from "../page/JobDetails";
 import jobs from "../page/JobL/jobs.json";
-import AiInterview from "../page/AiInterview";
+import AiInterviewIntro from "../page/AiInterviewIntro";
+import AiInterviewMain from "../page/AiInterviewMain";
 
 export const routes = [
   { path: "/", element: <Home /> },
@@ -24,6 +25,10 @@ export const routes = [
   })),
   ...jobs.map((job) => ({
     path: `/ai-${job.id}`,
-    element: <AiInterview jobId={job.id} />,
+    element: <AiInterviewIntro jobId={job.id} />,
+  })),
+  ...jobs.map((job) => ({
+    path: `/main-ai-${job.id}`,
+    element: <AiInterviewMain jobId={job.id} />,
   })),
 ];
