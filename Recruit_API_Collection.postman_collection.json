@@ -1,0 +1,812 @@
+{
+  "info": {
+    "_postman_id": "recruit-api-collection",
+    "name": "Recruit API Collection",
+    "description": "Complete API collection for the Recruit application with job postings, applicant management, applications, reports, and AI interview system.\n\n## Quick Start Workflow:\n\n1. **Setup Users:**\n   - Register HR user: POST /api/users/register (role: 'hr')\n   - Register Applicant user: POST /api/users/register (role: 'applicant')\n   - Login users: POST /api/users/login\n\n2. **Create Job Posting:**\n   - Create job: POST /api/jobs (use HR user's _id as hrId)\n\n3. **Create Applicant Profile:**\n   - Create applicant profile: POST /api/applicants (use Applicant user's _id as userId)\n\n4. **Job Application Process:**\n   - Apply to job: POST /api/applications\n   - Start AI interview: POST /api/applications/{id}/start-interview\n   - Connect to WebSocket for interview: ws://localhost:5000\n\n5. **Review Results:**\n   - Get interview report: GET /api/reports/application/{applicationId}\n   - View job statistics: GET /api/reports/job/{jobId}/stats\n\n## Important Notes:\n- All IDs must be valid MongoDB ObjectIds (24-character hex strings)\n- HR users can create jobs and view reports\n- Applicant users can create profiles and apply to jobs\n- WebSocket connection required for AI interviews\n- Reports are auto-generated after interview completion",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "description": "User registration, authentication, and profile management for HR and Applicant users",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith\",\n  \"email\": \"john.smith@techcorp.com\",\n  \"password\": \"securePassword123\",\n  \"role\": \"hr\",\n  \"profile\": {\n    \"phone\": \"+1-555-0123\",\n    \"location\": \"New York, NY\",\n    \"bio\": \"Experienced HR professional with 8+ years in talent acquisition and employee management.\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "register"]
+            },
+            "description": "Register a new user account. Role can be 'hr' or 'applicant'. Profile fields are optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Register Applicant User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane.doe@email.com\",\n  \"password\": \"myPassword456\",\n  \"role\": \"applicant\",\n  \"profile\": {\n    \"phone\": \"+1-555-0456\",\n    \"location\": \"San Francisco, CA\",\n    \"bio\": \"Full-stack developer with 5+ years of experience in React, Node.js, and MongoDB. Passionate about creating scalable web applications.\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "register"]
+            },
+            "description": "Example of registering an applicant user account"
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.smith@techcorp.com\",\n  \"password\": \"securePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "login"]
+            },
+            "description": "Authenticate a user with email and password. Returns user profile without password."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?role=hr&page=1&limit=10&search=john",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "hr",
+                  "description": "Filter by user role (hr, applicant)",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of results per page (max 100)"
+                },
+                {
+                  "key": "search",
+                  "value": "john",
+                  "description": "Search by name or email",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all users with optional filtering by role and search term. Supports pagination."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Users by Role",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/role/hr",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "role", "hr"]
+            },
+            "description": "Get all users with a specific role (hr or applicant)"
+          },
+          "response": []
+        },
+        {
+          "name": "Check Email Exists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/check-email/john.smith@techcorp.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "check-email", "john.smith@techcorp.com"]
+            },
+            "description": "Check if an email address is already registered. Useful for registration form validation."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{hrUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{hrUserId}}"]
+            },
+            "description": "Get a specific user by their ID. Password is excluded from the response."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith Jr.\",\n  \"email\": \"john.smith.jr@techcorp.com\",\n  \"profile\": {\n    \"phone\": \"+1-555-0789\",\n    \"location\": \"Boston, MA\",\n    \"bio\": \"Senior HR professional with 10+ years in talent acquisition, specializing in tech recruitment.\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{hrUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{hrUserId}}"]
+            },
+            "description": "Update user profile information. All fields are optional. Email uniqueness is validated."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"newSecurePassword789\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{hrUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{hrUserId}}"]
+            },
+            "description": "Update user password. Password must be at least 6 characters long."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{hrUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{hrUserId}}"]
+            },
+            "description": "Permanently delete a user account. Use with caution as this action cannot be undone."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "description": "Job management endpoints for HR users",
+      "item": [
+        {
+          "name": "Create Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Full Stack Developer\",\n  \"description\": \"We are looking for an experienced Full Stack Developer to join our dynamic team. The ideal candidate will have expertise in React, Node.js, and MongoDB.\",\n  \"requirements\": [\n    \"5+ years of experience in full stack development\",\n    \"Proficiency in React and Node.js\",\n    \"Experience with MongoDB and REST APIs\",\n    \"Strong problem-solving skills\",\n    \"Bachelor's degree in Computer Science or related field\"\n  ],\n  \"skills\": [\n    \"React\",\n    \"Node.js\",\n    \"MongoDB\",\n    \"JavaScript\",\n    \"TypeScript\",\n    \"REST APIs\",\n    \"Git\"\n  ],\n  \"companyName\": \"TechCorp Solutions\",\n  \"companyDescription\": \"A leading technology company specializing in innovative software solutions.\",\n  \"location\": \"New York, NY\",\n  \"salary\": {\n    \"min\": 90000,\n    \"max\": 130000,\n    \"currency\": \"USD\"\n  },\n  \"hrId\": \"{{hrUserId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs"]
+            },
+            "description": "Create a new job posting. Note: hrId must be a valid ObjectId of an existing HR user. First register an HR user using POST /api/users/register with role='hr', then use their _id as hrId."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs?status=active&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "active",
+                  "description": "Filter by job status (active, inactive, closed)"
+                },
+                {
+                  "key": "skills",
+                  "value": "React,Node.js",
+                  "description": "Filter by skills (comma-separated)",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "New York",
+                  "description": "Filter by location",
+                  "disabled": true
+                },
+                {
+                  "key": "minSalary",
+                  "value": "80000",
+                  "description": "Minimum salary filter",
+                  "disabled": true
+                },
+                {
+                  "key": "maxSalary",
+                  "value": "150000",
+                  "description": "Maximum salary filter",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of results per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "{{jobId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Job",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Full Stack Developer (Updated)\",\n  \"description\": \"Updated job description with new requirements\",\n  \"salary\": {\n    \"min\": 95000,\n    \"max\": 140000,\n    \"currency\": \"USD\"\n  },\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "{{jobId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/{{jobId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", "{{jobId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Applicants",
+      "description": "Applicant profile management with resume upload",
+      "item": [
+        {
+          "name": "Create Applicant Profile",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userId",
+                  "value": "{{applicantUserId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "salaryExpectation",
+                  "value": "{\"min\": 80000, \"max\": 120000, \"currency\": \"USD\"}",
+                  "type": "text"
+                },
+                {
+                  "key": "resume",
+                  "type": "file",
+                  "src": "/path/to/sample_resume.pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/applicants",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applicants"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Applicant Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applicants/{{applicantUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applicants", "{{applicantUserId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Applicant Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salaryExpectation\": {\n    \"min\": 85000,\n    \"max\": 125000,\n    \"currency\": \"USD\"\n  },\n  \"structuredData\": {\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@email.com\",\n    \"phone\": \"+1-555-0123\",\n    \"experience\": [\n      {\n        \"company\": \"Tech Solutions Inc\",\n        \"position\": \"Software Developer\",\n        \"duration\": \"2020-2023\",\n        \"description\": \"Developed web applications using React and Node.js\"\n      }\n    ],\n    \"education\": [\n      {\n        \"institution\": \"University of Technology\",\n        \"degree\": \"Bachelor of Computer Science\",\n        \"year\": \"2020\"\n      }\n    ],\n    \"skills\": [\n      \"JavaScript\",\n      \"React\",\n      \"Node.js\",\n      \"MongoDB\",\n      \"Python\"\n    ],\n    \"projects\": [\n      {\n        \"name\": \"E-commerce Platform\",\n        \"description\": \"Built a full-stack e-commerce application\",\n        \"technologies\": [\"React\", \"Node.js\", \"MongoDB\"]\n      }\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/applicants/{{applicantUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applicants", "{{applicantUserId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "description": "Job application management and interview coordination",
+      "item": [
+        {
+          "name": "Apply to Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": \"{{jobId}}\",\n  \"applicantId\": \"{{applicantId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/applications",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Applications by Job",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/job/{{jobId}}?status=applied&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "job", "{{jobId}}"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "applied",
+                  "description": "Filter by application status"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Results per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Applications by Applicant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/applicant/{{applicantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "applicant", "{{applicantId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Application by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start Interview",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/start-interview",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "start-interview"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Application Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"interview_completed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}", "status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "description": "Interview reports and candidate assessment",
+      "item": [
+        {
+          "name": "Get Report by Application",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/application/{{applicationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "application", "{{applicationId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/{{reportId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "{{reportId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reports by Job",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/job/{{jobId}}?sortBy=overallScore&order=desc&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "job", "{{jobId}}"],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "overallScore",
+                  "description": "Sort by field (overallScore, technicalScore, behavioralScore, communicationScore, jobMatchScore)"
+                },
+                {
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order (asc, desc)"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Results per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Interview Transcript",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/{{reportId}}/transcript",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "{{reportId}}", "transcript"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Report Recommendation",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recommendation\": \"strongly_recommend\",\n  \"notes\": \"Excellent candidate with strong technical skills and great communication. Highly recommended for the position.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/{{reportId}}/recommendation",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "{{reportId}}", "recommendation"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job Report Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/job/{{jobId}}/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "job", "{{jobId}}", "stats"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "WebSocket Documentation",
+      "description": "WebSocket endpoints and message formats for AI interview system",
+      "item": [
+        {
+          "name": "WebSocket Connection Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Note",
+                "value": "This is documentation only - WebSocket connections cannot be tested in Postman"
+              }
+            ],
+            "url": {
+              "raw": "ws://{{wsBaseUrl}}",
+              "protocol": "ws",
+              "host": ["{{wsBaseUrl}}"]
+            },
+            "description": "WebSocket Connection Endpoint: ws://localhost:5000\n\nMessage Types:\n\n1. START INTERVIEW\n{\n  \"type\": \"start_interview\",\n  \"applicationId\": \"application_id_here\"\n}\n\n2. SEND TEXT MESSAGE\n{\n  \"type\": \"text_message\",\n  \"message\": \"Your answer to the interview question\"\n}\n\n3. END INTERVIEW\n{\n  \"type\": \"end_interview\"\n}\n\nResponse Types:\n\n1. INTERVIEW STARTED\n{\n  \"type\": \"interview_started\",\n  \"sessionId\": \"interview_session_id\",\n  \"message\": \"First interview question from AI\"\n}\n\n2. AI RESPONSE CHUNK (streaming)\n{\n  \"type\": \"ai_response_chunk\",\n  \"data\": \"Partial AI response text\"\n}\n\n3. AI RESPONSE COMPLETE\n{\n  \"type\": \"ai_response_complete\",\n  \"data\": \"Complete AI response text\"\n}\n\n4. INTERVIEW COMPLETED\n{\n  \"type\": \"interview_completed\",\n  \"message\": \"Interview completed successfully\"\n}\n\n5. INTERVIEW ENDED\n{\n  \"type\": \"interview_ended\",\n  \"message\": \"Interview ended successfully\"\n}\n\n6. ERROR\n{\n  \"type\": \"error\",\n  \"message\": \"Error description\"\n}\n\nUsage Flow:\n1. Connect to WebSocket endpoint\n2. Send start_interview message with applicationId\n3. Receive interview_started response with first question\n4. Send text_message responses to answer questions\n5. Receive ai_response_chunk messages (streaming AI responses)\n6. Continue until interview is completed (11 questions) or manually end\n7. Receive interview_completed when finished\n\nNote: The AI interview system uses streaming responses, so you'll receive multiple ai_response_chunk messages followed by ai_response_complete for each AI response."
+          },
+          "response": []
+        },
+        {
+          "name": "Sample WebSocket Messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api",
+              "host": ["{{baseUrl}}"],
+              "path": ["api"]
+            },
+            "description": "SAMPLE WEBSOCKET CONVERSATION:\n\n// 1. Client connects and starts interview\nSEND: {\n  \"type\": \"start_interview\",\n  \"applicationId\": \"64f1a2b3c4d5e6f7g8h9i0j1\"\n}\n\n// 2. Server responds with first question\nRECEIVE: {\n  \"type\": \"interview_started\",\n  \"sessionId\": \"interview_1697123456789_abc123\",\n  \"message\": \"Hello! Welcome to your AI interview. Let's start with a simple question: Can you tell me about yourself and your background in software development?\"\n}\n\n// 3. Client sends answer\nSEND: {\n  \"type\": \"text_message\",\n  \"message\": \"Hi! I'm a software developer with 5 years of experience in full-stack development. I've worked extensively with React, Node.js, and MongoDB...\"\n}\n\n// 4. Server streams AI response\nRECEIVE: {\n  \"type\": \"ai_response_chunk\",\n  \"data\": \"Thank you for that introduction. Based on your experience with React\"\n}\n\nRECEIVE: {\n  \"type\": \"ai_response_chunk\",\n  \"data\": \" and Node.js, I'd like to ask you about a technical scenario...\"\n}\n\nRECEIVE: {\n  \"type\": \"ai_response_complete\",\n  \"data\": \"Thank you for that introduction. Based on your experience with React and Node.js, I'd like to ask you about a technical scenario...\"\n}\n\n// 5. Continue conversation until completion\n// After 11 questions:\nRECEIVE: {\n  \"type\": \"interview_completed\",\n  \"message\": \"Interview completed successfully\"\n}\n\n// 6. Or manually end early:\nSEND: {\n  \"type\": \"end_interview\"\n}\n\nRECEIVE: {\n  \"type\": \"interview_ended\",\n  \"message\": \"Interview ended successfully\"\n}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "description": "Basic server health check",
+      "item": [
+        {
+          "name": "Server Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "wsBaseUrl",
+      "value": "localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "jobId",
+      "value": "64f1a2b3c4d5e6f7g8h9i0j1",
+      "type": "string",
+      "description": "Sample Job ID - replace with actual ID"
+    },
+    {
+      "key": "applicantId",
+      "value": "64f1a2b3c4d5e6f7g8h9i0j2",
+      "type": "string",
+      "description": "Sample Applicant ID - replace with actual ID"
+    },
+    {
+      "key": "applicationId",
+      "value": "64f1a2b3c4d5e6f7g8h9i0j3",
+      "type": "string",
+      "description": "Sample Application ID - replace with actual ID"
+    },
+    {
+      "key": "reportId",
+      "value": "64f1a2b3c4d5e6f7g8h9i0j4",
+      "type": "string",
+      "description": "Sample Report ID - replace with actual ID"
+    },
+    {
+      "key": "hrUserId",
+      "value": "64f1a2b3c4d5e6f7g8h9i0j5",
+      "type": "string",
+      "description": "Sample HR User ID - replace with actual ID"
+    },
+    {
+      "key": "applicantUserId",
+      "value": "64f1a2b3c4d5e6f7g8h9i0j6",
+      "type": "string",
+      "description": "Sample Applicant User ID - replace with actual ID"
+    },
+    {
+      "key": "userId",
+      "value": "64f1a2b3c4d5e6f7g8h9i0j7",
+      "type": "string",
+      "description": "Generic User ID for testing - replace with actual ID"
+    },
+    {
+      "key": "userEmail",
+      "value": "test.user@example.com",
+      "type": "string",
+      "description": "Test email for user operations"
+    }
+  ]
+}

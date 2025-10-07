@@ -1,28 +1,58 @@
 import express from "express";
-import interviewRoutes from "./routes/interview.routes.ts";
-import bodyParser from "body-parser";
 import cors from "cors";
+import helmet from "helmet";
+import dotenv from "dotenv";
+import http from "http";
+import { WebSocketServer } from "ws";
+
+import connectDB from "./config/db.js";
+import { handleConnection } from "./routes/ws.routes.js";
+import { registerRoutes } from "./routes/index.js";
+import { errorHandler } from "./middleware/errorHandler.js";
+import { requestLogger } from "./middleware/requestLogger.js";
+import { logger } from "./lib/logger.js";
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 
-// Middleware to parse JSON requests
-app.use(cors());
-app.use(bodyParser.json());
+// Connect to Database
+connectDB();
 
-// CORS middleware to allow requests from frontend
-app.use("/api/interview", interviewRoutes);
+// App middlewares
+app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN || true }));
+app.use(express.json());
+app.use(requestLogger);
 
-// Example route
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.send({ message: "Hello from Express backend 🚀" });
-});
+// Handle APIs routes
+app.get("/", (_req, res) =>
+  res.json({ message: "Hello! from _recruit backend..." })
+);
+
+registerRoutes(app);
+
+app.use(errorHandler);
+
+// Handle WebSocket connections
+wss.on("connection", handleConnection);
 
 // Start server
-app
-  .listen(PORT, () => {
-    console.log(`⚡ Server running on port ${PORT}`);
-  })
-  .on("error", (err) => {
-    console.error("Failed to start server:", err);
-  });
+function startServer() {
+  server.listen(PORT, () => logger.info(`⚡ Server running on port ${PORT}`, { port: PORT }));
+
+  const shutdown = (signal?: string, err?: Error) => {
+    if (signal) logger.info(`Received ${signal}, shutting down`, { signal });
+    if (err) logger.error("Server error:", { err });
+    server.close(() => process.exit(err ? 1 : 0));
+  };
+
+  server.on("error", (err) => shutdown(undefined, err));
+  process.on("SIGINT", () => shutdown("SIGINT"));
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+}
+
+startServer();

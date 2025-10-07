@@ -1,9 +1,32 @@
 services:
+  mongodb:
+    image: mongo:7.0
+    container_name: recruit_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: recruit_db
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - recruit_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
   backend:
     build:
       context: .
       dockerfile: ./docker/server.dockerfile
     image: recruit_backend
+    container_name: recruit_backend
+    restart: unless-stopped
     ports:
       - "5000:5000"
     volumes:
@@ -13,12 +36,25 @@ services:
       - type: volume
         source: server_node_modules
         target: /server/node_modules
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://admin:password123@mongodb:27017/recruit_db?authSource=admin
+      - PORT=5000
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - recruit_network
 
   frontend:
     build:
       context: .
       dockerfile: ./docker/client.dockerfile
     image: recruit_frontend
+    container_name: recruit_frontend
+    restart: unless-stopped
     ports:
       - "5173:5173"
     volumes:
@@ -30,8 +66,20 @@ services:
         target: /client/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
       - WDS_SOCKET_PORT=0
+      - VITE_API_URL=http://localhost:5000
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+    networks:
+      - recruit_network
 
 volumes:
   server_node_modules:
   client_node_modules:
+  mongodb_data:
+
+networks:
+  recruit_network:
+    driver: bridge

@@ -16,4 +16,4 @@ COPY client/ .
 EXPOSE 5173
 
 # run vite and bind to 0.0.0.0 so it's reachable from host
-CMD ["sh", "-c", "npm run dev -- --host 0.0.0.0"]
+CMD ["npm", "run", "dev"]
