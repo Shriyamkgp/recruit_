@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./interviewlayout.css";
 import Dictaphone from "./Dictaphone";
 import AgentVoice from "./AgentVoice";
@@ -13,6 +13,7 @@ function index({ jobId }: IndexProps) {
   const [isUserTurn, setIsUserTurn] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [currIndex, setCurrIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   let agentArray: string[] = [
     "Hello how are you",
@@ -25,7 +26,6 @@ function index({ jobId }: IndexProps) {
   // 1. Function called by the TextToSpeech component when it finishes speaking
   const handleSpeechComplete = useCallback(() => {
     // console.log("TTS sequence finished. Starting Dictaphone.");
-
     setTimeout(() => {
       // Only proceed if the interview is not yet complete
       if (!interviewComplete) {
@@ -51,19 +51,39 @@ function index({ jobId }: IndexProps) {
     []
   );
 
+  useEffect(() => {
+    setIsMounted(true);
+    console.log("-> App component fully mounted. Initial render complete.");
+  }, [isMounted]);
+
+  let currentTurnComponent;
+
+  if (!isMounted) {
+    currentTurnComponent = (
+      <div className="visualizer-text text-xl font-bold text-yellow-400">
+        Initializing AI Interview...
+      </div>
+    );
+  } else if (interviewComplete) {
+    currentTurnComponent = (
+      <div className="visualizer-text text-xl font-bold text-green-400">
+        Interview Complete. Thank you!
+      </div>
+    );
+  } else {
+    currentTurnComponent = !isUserTurn ? (
+      <AgentVoice
+        text_input={agentArray[currIndex]}
+        onSpeechComplete={handleSpeechComplete}
+      />
+    ) : (
+      <Dictaphone onTranscriptChange={handleTranscriptChange} />
+    );
+  }
+
   return (
     <>
-      {!isUserTurn ? (
-        <AgentVoice
-          text_input={agentArray[currIndex]}
-          onSpeechComplete={handleSpeechComplete}
-        />
-      ) : (
-        <>
-          <Dictaphone onTranscriptChange={handleTranscriptChange} />
-        </>
-      )}
-
+      {currentTurnComponent}
       {/* <h1>Starting AI interview for {jobId}</h1> */}
       <div className="interview-container">
         {/* 1. Sidebar for Questions/Answers (Larger Rectangular Block)
