@@ -12,7 +12,7 @@
 
 /* ----------------- Sidebar Styling ----------------- */
 .sidebar {
-  width: 350px; /* Fixed width for the sidebar */
+  width: 350px;
   height: 100%;
   background-color: #333;
   padding: 20px;
@@ -20,7 +20,7 @@
   border-right: 1px solid #444;
   display: flex;
   flex-direction: column;
-  overflow-y: auto; /* Scrollable chat area */
+  overflow-y: auto;
 }
 
 .sidebar-header {
@@ -48,6 +48,23 @@
 }
 
 /* ----------------- Central Visualizer Styling ----------------- */
+
+/* Keyframe Animation for Speaking Pulse */
+@keyframes speaking-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 30px rgba(97, 218, 251, 0.5);
+  }
+  50% {
+    transform: scale(1.05); /* Slightly enlarge */
+    box-shadow: 0 0 40px rgba(97, 218, 251, 1), 0 0 60px rgba(97, 218, 251, 0.7); /* Enhance glow */
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 30px rgba(97, 218, 251, 0.5);
+  }
+}
+
 .visualizer {
   display: flex;
   flex-direction: column;
@@ -59,14 +76,20 @@
 .visualizer-circle {
   width: 300px;
   height: 300px;
-  border-radius: 50%; /* Makes it a circle */
-  background: linear-gradient(45deg, #61dafb, #21a1f1); /* Gradient effect */
+  border-radius: 50%; /* Makes it a circle /
+background: linear-gradient(45deg, #61dafb, #21a1f1); /* Gradient effect */
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 4rem;
   font-weight: bold;
-  box-shadow: 0 0 30px rgba(97, 218, 251, 0.5); /* Glowing effect */
+  box-shadow: 0 0 30px rgba(97, 218, 251, 0.5); /* Initial glowing effect */
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out; /* Smooth transition when animation stops */
+}
+
+/* New Class to apply the animation when the agent is speaking */
+.visualizer-circle.is-speaking {
+  animation: speaking-pulse 1.5s infinite ease-in-out;
 }
 
 .visualizer-text {
