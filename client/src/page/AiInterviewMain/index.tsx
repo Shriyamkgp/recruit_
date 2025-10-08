@@ -23,11 +23,10 @@ function index({ jobId }: IndexProps) {
 
   const interviewComplete = currIndex >= agentArray.length;
 
-  // 1. Function called by the TextToSpeech component when it finishes speaking
   const handleSpeechComplete = useCallback(() => {
-    // console.log("TTS sequence finished. Starting Dictaphone.");
+    let chat_history: string[] = [];
+
     setTimeout(() => {
-      // Only proceed if the interview is not yet complete
       if (!interviewComplete) {
         setIsUserTurn(true);
         console.log("-> User turn started (Dictaphone mounted).");
@@ -35,7 +34,7 @@ function index({ jobId }: IndexProps) {
         console.log("-> Interview sequence finished.");
       }
     }, 500);
-  }, []);
+  }, [interviewComplete]);
 
   // Handler for STT (from previous discussion)
   const handleTranscriptChange = useCallback(
@@ -48,13 +47,13 @@ function index({ jobId }: IndexProps) {
         setCurrIndex((currIndex) => currIndex + 1);
       }
     },
-    []
+    [interviewComplete]
   );
 
   useEffect(() => {
     setIsMounted(true);
     console.log("-> App component fully mounted. Initial render complete.");
-  }, [isMounted]);
+  }, []);
 
   let currentTurnComponent;
 
