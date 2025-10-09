@@ -13,14 +13,28 @@ export const interviewAgentResponse = async (
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-    const history = conversationHistory.map((turn) => ({
+    // Map conversation history to Gemini format
+    let history = conversationHistory.map((turn) => ({
       role: turn.speaker === "AI" ? "model" : "user",
       parts: [{ text: turn.text }],
     }));
 
-    const chat = model.startChat({ history });
+    // Google Gemini requires first message to be from 'user' role
+    // If first message is from 'model', we need to start without history
+    // and include the context in the current prompt
+    let chat;
+    if (history.length > 0 && history[0].role === "model") {
+      // Start fresh chat and include previous context in current prompt
+      chat = model.startChat({ history: [] });
+    } else {
+      chat = model.startChat({ history });
+    }
 
-    const prompt = buildInterviewPrompt(transcript, context);
+    const prompt = buildInterviewPrompt(
+      transcript,
+      context,
+      conversationHistory
+    );
     const result = await chat.sendMessageStream(prompt);
 
     return result.stream;
@@ -36,9 +50,21 @@ const buildInterviewPrompt = (
     jobDescription: string;
     candidateResume: string;
     questionsAsked: number;
-  }
+  },
+  conversationHistory: Array<{ speaker: string; text: string }> = []
 ) => {
   const { jobDescription, candidateResume, questionsAsked } = context;
+
+  // Build conversation context string if we have history
+  let conversationContext = "";
+  if (conversationHistory.length > 0) {
+    conversationContext =
+      "\n\nPREVIOUS CONVERSATION:\n" +
+      conversationHistory
+        .map((turn) => `${turn.speaker}: ${turn.text}`)
+        .join("\n") +
+      "\n";
+  }
 
   if (questionsAsked === 0) {
     return `
@@ -63,7 +89,7 @@ Keep your response concise and natural. Ask only ONE question at a time.
 
   if (questionsAsked >= 11) {
     return `
-The interview is complete. Thank the candidate professionally and let them know about next steps. 
+The interview is complete. Thank the candidate professionally and let them know about next steps.${conversationContext}
 Keep it brief and positive. End with something like "Thank you for your time today. We'll be in touch soon with next steps."
 `;
   }
@@ -87,7 +113,7 @@ You are conducting a professional job interview. The candidate just responded: "
 CONTEXT:
 Job Description: ${jobDescription}
 Candidate Resume: ${candidateResume}
-Current Question Number: ${questionsAsked + 1} of 11
+Current Question Number: ${questionsAsked + 1} of 11${conversationContext}
 
 INSTRUCTIONS:
 ${questionType}
