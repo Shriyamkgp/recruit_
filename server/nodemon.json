@@ -3,5 +3,8 @@
   "ignore": [".git", "node_modules/**/node_modules", "dist"],
   "verbose": true,
   "watch": ["./src"],
-  "exec": "node --loader ts-node/esm ./src/index.ts"
+  "ext": "ts,js,json",
+  "legacyWatch": true,
+  "polling": true,
+  "exec": "npx tsx ./src/index.ts"
 }

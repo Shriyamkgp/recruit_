@@ -1,5 +1,4 @@
 // src/config/routes.js
-import React from "react";
 import Home from "../page/Home";
 import About from "../page/About";
 import LoginF from "../page/LoginF";
@@ -12,23 +11,28 @@ import AiInterviewIntro from "../page/AiInterviewIntro";
 import AiInterviewMain from "../page/AiInterviewMain";
 
 export const routes = [
-  { path: "/", element: <Home /> },
-  { path: "/about", element: <About /> },
-  { path: "/login", element: <LoginF /> },
-  { path: "/applicant", element: <ApplicantF /> },
-  { path: "/hrf", element: <HRF /> },
-  { path: "/joblist", element: <JobL /> },
-  { path: "/jobdetail", element: <JobDetails /> },
+  { path: "/", element: <Home />, ws: false },
+  { path: "/about", element: <About />, ws: false },
+  { path: "/login", element: <LoginF />, ws: false },
+  { path: "/applicant", element: <ApplicantF />, ws: false },
+  { path: "/hrf", element: <HRF />, ws: false },
+  { path: "/joblist", element: <JobL />, ws: false },
+  { path: "/jobdetail", element: <JobDetails />, ws: false },
   ...jobs.map((job) => ({
     path: `/${job.id}`,
     element: <JobDetails jobId={job.id} />,
+    ws: false,
   })),
+
   ...jobs.map((job) => ({
     path: `/ai-${job.id}`,
     element: <AiInterviewIntro jobId={job.id} />,
+    ws: true,
   })),
+
   ...jobs.map((job) => ({
     path: `/main-ai-${job.id}`,
     element: <AiInterviewMain jobId={job.id} />,
+    ws: true,
   })),
 ];

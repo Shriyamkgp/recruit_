@@ -3,12 +3,24 @@ import "./interviewlayout.css";
 import Dictaphone from "./Dictaphone";
 import AgentVoice from "./AgentVoice";
 import WebcamCapture from "./webcam";
+import { useWebSocket } from "../../components/webSockerContext";
 
 interface IndexProps {
   jobId: string; // We expect jobId to be a string
 }
 
 function index({ jobId }: IndexProps) {
+  const { messages, sendMessage, interviewStarted, isConnected } =
+    useWebSocket();
+  const chatEndRef = React.useRef<HTMLDivElement>(null);
+
+  const handleSendMessage = useCallback(
+    (textToSend: string) => {
+      sendMessage(textToSend);
+    },
+    [sendMessage]
+  );
+
   // State to hold the transcript received from the child
   const [isUserTurn, setIsUserTurn] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -24,7 +36,7 @@ function index({ jobId }: IndexProps) {
   const interviewComplete = currIndex >= agentArray.length;
 
   const handleSpeechComplete = useCallback(() => {
-    let chat_history: string[] = [];
+    // let chat_history: string[] = [];
 
     setTimeout(() => {
       if (!interviewComplete) {
@@ -43,6 +55,8 @@ function index({ jobId }: IndexProps) {
 
       if (final) {
         console.log("User sequence finished. Starting Agent.");
+        handleSendMessage(newTranscript);
+        setTranscript("");
         setIsUserTurn(false);
         setCurrIndex((currIndex) => currIndex + 1);
       }
@@ -63,16 +77,15 @@ function index({ jobId }: IndexProps) {
         Initializing AI Interview...
       </div>
     );
-  } else if (interviewComplete) {
-    currentTurnComponent = (
-      <div className="visualizer-text text-xl font-bold text-green-400">
-        Interview Complete. Thank you!
-      </div>
-    );
   } else {
+    // Find the last message sent by the AI
+    const lastAiMessage = [...messages]
+      .reverse()
+      .find((msg) => msg.sender === "ai");
+
     currentTurnComponent = !isUserTurn ? (
       <AgentVoice
-        text_input={agentArray[currIndex]}
+        text_input={lastAiMessage ? lastAiMessage.text : ""}
         onSpeechComplete={handleSpeechComplete}
       />
     ) : (
@@ -91,9 +104,14 @@ function index({ jobId }: IndexProps) {
           <div className="sidebar-header">Interview Chat</div>
           <div className="chat-area">
             {/* Interview text content goes here */}
-            <p>AI: Welcome! Tell me about yourself.</p>
-            <p>You: I have 5 years of experience...</p>
-            <p>{transcript}</p>
+            {messages.map((message) => {
+              return (
+                <p key={message.timestamp.toISOString()}>
+                  {message.sender}: {message.text}
+                </p>
+              );
+            })}
+            {transcript}
           </div>
         </div>
 

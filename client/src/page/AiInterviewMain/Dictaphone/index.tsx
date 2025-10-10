@@ -61,7 +61,7 @@ const Dictaphone = ({ onTranscriptChange }: AutoSpeechInputProps) => {
       // ✅ FIX: Use the ref to access the LATEST transcript value,
       // avoiding the stale closure bug.
       stopAndReport(latestTranscriptRef.current);
-    }, 20000);
+    }, 30000);
 
     absoluteTimeoutRef.current = timerId;
 

@@ -23,7 +23,7 @@ export default function AgentVoice({ text_input, onSpeechComplete }: props) {
       start();
 
       // 2. Set the 8-second timeout
-      const TIMEOUT_MS = 8000;
+      const TIMEOUT_MS = 30000;
 
       timerId = setTimeout(() => {
         console.log("TTS Timeout: 8 seconds reached.");
