@@ -20,7 +20,7 @@ interface WebSocketContextType {
   interviewStarted: boolean;
   addMessage: (sender: Message["sender"], text: string) => void;
   startInterview: (jobId: string) => void;
-  sendMessage: (message: string) => void;
+  sendMessage: (message: string, updateIndex?: () => void) => void;
 }
 
 // Set up the default context value
@@ -48,16 +48,19 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const URL = "ws://localhost:5000";
 
   // 1. Helper to add messages
-  const addMessage = useCallback((sender: Message["sender"], text: string) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        sender,
-        text,
-        timestamp: new Date(),
-      },
-    ]);
-  }, []);
+  const addMessage = useCallback(
+    async (sender: Message["sender"], text: string) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender,
+          text,
+          timestamp: new Date(),
+        },
+      ]);
+    },
+    []
+  );
 
   // 2. WebSocket Message Handler
   const handleWebSocketMessage = useCallback(
@@ -166,7 +169,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // 5. Function to send a message
   const sendMessage = useCallback(
-    (message: string) => {
+    (message: string, updateIndex?: () => void) => {
       if (
         !message.trim() ||
         !isConnected ||
@@ -196,6 +199,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       addMessage("user", message);
+      if (updateIndex) updateIndex();
     },
     [isConnected, interviewStarted, addMessage]
   );

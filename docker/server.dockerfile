@@ -10,6 +10,7 @@ WORKDIR /server
 # Copy package files and install dependencies
 COPY server/package*.json ./
 RUN npm install
+RUN npm install -g tsx
 
 # Copy the rest of the application files
 COPY server ./

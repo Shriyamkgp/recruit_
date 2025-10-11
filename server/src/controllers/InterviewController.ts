@@ -226,7 +226,7 @@ export class InterviewController extends BaseController {
       session.questionsAsked += 1;
 
       // Check if interview is complete
-      if (session.questionsAsked >= 11) {
+      if (session.questionsAsked > 10) {
         session.status = "completed";
         session.completedAt = new Date();
 

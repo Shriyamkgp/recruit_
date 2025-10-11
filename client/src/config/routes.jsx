@@ -9,6 +9,7 @@ import JobDetails from "../page/JobDetails";
 import jobs from "../page/JobL/jobs.json";
 import AiInterviewIntro from "../page/AiInterviewIntro";
 import AiInterviewMain from "../page/AiInterviewMain";
+import Thankyou from "../page/Thankyou";
 
 export const routes = [
   { path: "/", element: <Home />, ws: false },
@@ -17,6 +18,7 @@ export const routes = [
   { path: "/applicant", element: <ApplicantF />, ws: false },
   { path: "/hrf", element: <HRF />, ws: false },
   { path: "/joblist", element: <JobL />, ws: false },
+  { path: "/thankyou", element: <Thankyou />, ws: false },
   { path: "/jobdetail", element: <JobDetails />, ws: false },
   ...jobs.map((job) => ({
     path: `/${job.id}`,

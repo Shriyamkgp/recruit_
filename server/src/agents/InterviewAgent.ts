@@ -18,7 +18,6 @@ export const interviewAgentResponse = async (
       parts: [{ text: turn.text }],
     }));
 
-    
     const chat = model.startChat({ history });
 
     const prompt = buildInterviewPrompt(transcript, context);
@@ -62,7 +61,7 @@ Keep your response concise and natural. Ask only ONE question at a time.
 `;
   }
 
-  if (questionsAsked >= 11) {
+  if (questionsAsked >= 10) {
     return `
 The interview is complete. Thank the candidate professionally and let them know about next steps. 
 Keep it brief and positive. End with something like "Thank you for your time today. We'll be in touch soon with next steps."

@@ -1,52 +1,75 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import "./interviewlayout.css";
 import Dictaphone from "./Dictaphone";
 import AgentVoice from "./AgentVoice";
 import WebcamCapture from "./webcam";
+import { useNavigate } from "react-router-dom";
 import { useWebSocket } from "../../components/webSockerContext";
+import { set } from "zod";
 
 interface IndexProps {
-  jobId: string; // We expect jobId to be a string
+  jobId: string;
 }
 
 function index({ jobId }: IndexProps) {
   const { messages, sendMessage, interviewStarted, isConnected } =
     useWebSocket();
-  const chatEndRef = React.useRef<HTMLDivElement>(null);
-
-  const handleSendMessage = useCallback(
-    (textToSend: string) => {
-      sendMessage(textToSend);
-    },
-    [sendMessage]
-  );
+  const navigate = useNavigate();
+  const divRef = useRef<HTMLDivElement>(null);
 
   // State to hold the transcript received from the child
   const [isUserTurn, setIsUserTurn] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [currIndex, setCurrIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+  const [prevIndex, setPrevIndex] = useState(-1);
 
-  let agentArray: string[] = [
-    "Hello how are you",
-    "I hope you are doing well",
-    "Hey This is the last message, Thank you for the interview",
-  ];
+  const updateIndex = useCallback(() => {
+    setCurrIndex((currIndex) => currIndex + 1);
+  }, []);
 
-  const interviewComplete = currIndex >= agentArray.length;
+  // Function to send message to WebSocket
+  const handleSendMessage = useCallback(
+    async (textToSend: string) => {
+      await sendMessage(textToSend, updateIndex);
+    },
+    [sendMessage]
+  );
+
+  useEffect(() => {
+    if (divRef.current) {
+      // Scroll to the bottom of the referenced div
+      divRef.current.scrollTo({
+        top: divRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
+
+  //End Interview Button Handler
+  const endbuttonhandle = () => {
+    console.log("End Interview Button Clicked");
+    navigate("./../thankyou");
+  };
+
+  const interviewComplete =
+    messages.filter((message) => message.sender === "ai").length > 10 ||
+    (messages[messages.length - 1].sender === "system" &&
+      messages[messages.length - 1].text ===
+        "Thank you for completing the interview!");
 
   const handleSpeechComplete = useCallback(() => {
-    // let chat_history: string[] = [];
-
     setTimeout(() => {
+      console.log(`AI sequence finished.: ${interviewComplete}`);
       if (!interviewComplete) {
+        console.log("-> Starting User turn (Dictaphone mounting).");
         setIsUserTurn(true);
         console.log("-> User turn started (Dictaphone mounted).");
       } else {
         console.log("-> Interview sequence finished.");
       }
-    }, 500);
-  }, [interviewComplete]);
+    }, 100);
+  }, [interviewComplete, setIsUserTurn]);
 
   // Handler for STT (from previous discussion)
   const handleTranscriptChange = useCallback(
@@ -54,11 +77,11 @@ function index({ jobId }: IndexProps) {
       setTranscript(newTranscript);
 
       if (final) {
+        setPrevIndex(currIndex);
         console.log("User sequence finished. Starting Agent.");
         handleSendMessage(newTranscript);
         setTranscript("");
         setIsUserTurn(false);
-        setCurrIndex((currIndex) => currIndex + 1);
       }
     },
     [interviewComplete]
@@ -79,38 +102,79 @@ function index({ jobId }: IndexProps) {
     );
   } else {
     // Find the last message sent by the AI
-    const lastAiMessage = [...messages]
-      .reverse()
-      .find((msg) => msg.sender === "ai");
+    let lastAiMessage: { text: string } = { text: "" };
+    if (prevIndex !== currIndex && !isUserTurn) {
+      const foundMessage = [...messages]
+        .reverse()
+        .find((msg) => msg.sender === "ai" && typeof msg.text === "string");
+      if (foundMessage && foundMessage.text) {
+        lastAiMessage.text = foundMessage.text;
+      }
+    }
 
     currentTurnComponent = !isUserTurn ? (
       <AgentVoice
-        text_input={lastAiMessage ? lastAiMessage.text : ""}
+        text_input={lastAiMessage.text}
         onSpeechComplete={handleSpeechComplete}
       />
     ) : (
       <Dictaphone onTranscriptChange={handleTranscriptChange} />
     );
   }
-
+  const showEndButton =
+    messages.filter((msg) => msg.sender === "ai").length > 10;
+  console.log(messages);
   return (
     <>
       {currentTurnComponent}
       {/* <h1>Starting AI interview for {jobId}</h1> */}
+      {showEndButton && (
+        <button className="end-interview-btn" onClick={endbuttonhandle}>
+          End Interview
+        </button>
+      )}
       <div className="interview-container">
         {/* 1. Sidebar for Questions/Answers (Larger Rectangular Block)
          */}
         <div className="sidebar">
           <div className="sidebar-header">Interview Chat</div>
-          <div className="chat-area">
+          <div
+            className="chat-area"
+            ref={divRef}
+            style={{ overflowY: "scroll" }}
+          >
             {/* Interview text content goes here */}
-            {messages.map((message) => {
-              return (
-                <p key={message.timestamp.toISOString()}>
-                  {message.sender}: {message.text}
-                </p>
-              );
-            })}
+
+            {messages
+              .filter((message) => message.sender !== "system")
+              .map((message) => {
+                if (message.sender === "ai") {
+                  return (
+                    <p
+                      key={message.timestamp.toISOString()}
+                      className="ai-message bg-blue-200 text-white"
+                    >
+                      Agent: {message.text}
+                    </p>
+                  );
+                } else if (
+                  message.sender === "user" &&
+                  messages
+                    .filter((m) => m.sender === "user")
+                    .indexOf(message) !== 0
+                ) {
+                  return (
+                    <p
+                      key={message.timestamp.toISOString()}
+                      className="user-message"
+                    >
+                      You: {message.text}
+                    </p>
+                  );
+                } else {
+                  return null;
+                }
+              })}
             {transcript}
           </div>
         </div>

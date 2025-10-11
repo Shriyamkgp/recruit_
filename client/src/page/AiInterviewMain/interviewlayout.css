@@ -28,6 +28,9 @@
   font-weight: bold;
   margin-bottom: 15px;
   color: #61dafb; /* React-like color */
+  background: linear-gradient(90deg, #333 0%, #444 100%);
+  padding: 10px 16px;
+  border-radius: 8px;
 }
 
 .chat-area p {
@@ -103,8 +106,8 @@ background: linear-gradient(45deg, #61dafb, #21a1f1); /* Gradient effect */
   position: absolute; /* Positions it relative to the main-content */
   bottom: 40px;
   right: 40px;
-  width: 200px; /* Small video size */
-  height: 150px;
+  width: 260px; /* Small video size */
+  height: 151px;
   background-color: #555;
   border: 3px solid #61dafb;
   border-radius: 8px;
@@ -120,4 +123,61 @@ background: linear-gradient(45deg, #61dafb, #21a1f1); /* Gradient effect */
   align-items: center;
   font-size: 0.9rem;
   color: #eee;
+}
+
+.ai-message {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(90deg, #61dafb 0%, #21a1f1 100%);
+  font-weight: 500;
+  min-height: 24px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(97, 218, 251, 0.15);
+  border: 1px solid #21a1f1;
+  letter-spacing: 0.02em;
+  transition: box-shadow 0.2s;
+}
+.ai-message:hover {
+  box-shadow: 0 4px 18px rgba(97, 218, 251, 0.25);
+}
+
+.user-message {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: #fff;
+  background: linear-gradient(90deg, #3cdb71 0%, #2ecc40 100%);
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(67, 234, 124, 0.15);
+  min-height: 24px; /* Ensures space is reserved even when empty */
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border: 1px solid #2ecc40;
+}
+
+.end-interview-btn {
+  display: inline-block;
+  background: linear-gradient(90deg, #ff4b2b 0%, #ff416c 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(255, 65, 108, 0.15);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+}
+
+.end-interview-btn:hover,
+.end-interview-btn:focus {
+  background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
+  box-shadow: 0 4px 18px rgba(255, 65, 108, 0.25);
+  transform: scale(1.04);
+  outline: none;
 }
