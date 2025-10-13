@@ -4,7 +4,6 @@ import asyncWrapper from "../middleware/asyncWrapper.js";
 import { ApplicantController } from "../controllers/ApplicantController.js";
 import multer from "multer";
 import path from "path";
-
 const router = express.Router();
 const applicantController = new ApplicantController();
 

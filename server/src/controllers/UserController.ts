@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import { User } from "../models/index.js";
 import { BaseController } from "./base/BaseController.js";
@@ -37,6 +38,10 @@ export interface UserFilters {
   limit?: number;
   search?: string;
 }
+
+const JWT_SECRET: string = (process.env.JWT_SECRET ||
+  "your_super_secret_key_change_me_in_prod") as string;
+const JWT_EXPIRY: string = (process.env.JWT_EXPIRY || "1d") as string;
 
 export class UserController extends BaseController {
   // Register a new user
@@ -136,6 +141,14 @@ export class UserController extends BaseController {
       if (!isPasswordValid) {
         return this.badRequest("Invalid email or password");
       }
+      // Prepare JWT payload
+      const payload = {
+        id: user._id as string,
+        role: user.role,
+      };
+
+      // Generate JWT token
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRY });
 
       // Return user without password
       const userResponse = {
@@ -146,6 +159,8 @@ export class UserController extends BaseController {
         profile: user.profile,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        // Include token in response
+        token: token,
       };
 
       return this.success(userResponse, "Login successful");

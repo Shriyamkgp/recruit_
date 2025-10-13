@@ -50,11 +50,11 @@ const ApplicantSchema: Schema = new Schema(
     resume: {
       fileName: {
         type: String,
-        required: false,
+        required: true,
       },
       filePath: {
         type: String,
-        required: false,
+        required: true,
       },
       extractedText: {
         type: String,

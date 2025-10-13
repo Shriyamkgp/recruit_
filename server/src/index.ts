@@ -8,6 +8,7 @@ import { WebSocketServer } from "ws";
 import connectDB from "./config/db.js";
 import { handleConnection } from "./routes/ws.routes.js";
 import { registerRoutes } from "./routes/index.js";
+import { registerProtectedRoutes } from "./routesprotected/protected.ts";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { logger } from "./lib/logger.js";
@@ -34,6 +35,7 @@ app.get("/", (_req, res) =>
 );
 
 registerRoutes(app);
+registerProtectedRoutes(app);
 
 app.use(errorHandler);
 

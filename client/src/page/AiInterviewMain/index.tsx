@@ -5,7 +5,6 @@ import AgentVoice from "./AgentVoice";
 import WebcamCapture from "./webcam";
 import { useNavigate } from "react-router-dom";
 import { useWebSocket } from "../../components/webSockerContext";
-import { set } from "zod";
 
 interface IndexProps {
   jobId: string;
@@ -192,7 +191,7 @@ function index({ jobId }: IndexProps) {
             </div>
             <div className="visualizer-text">
               {/* You should use state to update this text as well */}
-              {!isUserTurn ? "AI is Speaking..." : "Listening for Answer..."}
+              {!isUserTurn ? "Agent is Speaking..." : "Listening for Answer..."}
             </div>
           </div>
 

@@ -3,9 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Header from "./Header";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {
   Form,
@@ -17,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   username: z.string().min(2, {

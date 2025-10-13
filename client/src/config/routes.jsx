@@ -17,7 +17,7 @@ export const routes = [
   { path: "/login", element: <LoginF />, ws: false },
   { path: "/applicant", element: <ApplicantF />, ws: false },
   { path: "/hrf", element: <HRF />, ws: false },
-  { path: "/joblist", element: <JobL />, ws: false },
+  { path: "/job/applicant", element: <JobL />, ws: false },
   { path: "/thankyou", element: <Thankyou />, ws: false },
   { path: "/jobdetail", element: <JobDetails />, ws: false },
   ...jobs.map((job) => ({
