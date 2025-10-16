@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-
 import { useParams } from "react-router-dom";
-
 import * as RecruitApi from "@/api/RecruitApi";
-
 import { JobDescriptionForm } from "@/components/JobDescriptionForm";
-
 import Header from "../components/Header";
-
 import "../styles/JobDescription.css";
 
 // --- Types ---

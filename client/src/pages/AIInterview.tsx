@@ -119,7 +119,6 @@ const AIInterview = () => {
     messages.filter((msg) => msg.sender === "ai").length > 10;
 
   let currentTurnComponent;
-
   let lastAiMessageText = "";
 
   if (!isMounted) {
@@ -133,9 +132,7 @@ const AIInterview = () => {
 
     if (!isUserTurn) {
       const foundMessage = [...messages]
-
         .reverse()
-
         .find((msg) => msg.sender === "ai" && typeof msg.text === "string");
 
       if (foundMessage && foundMessage.text) {

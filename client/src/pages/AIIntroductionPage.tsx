@@ -1,13 +1,8 @@
 import React from "react";
-
 import { useNavigate } from "react-router-dom";
-
 import * as RecruitApi from "@/api/RecruitApi.js";
-
 import { useWebSocket } from "../components/WebSocketContext.tsx";
-
 import { INTERVIEW_INSTRUCTIONS } from "../components/InterviewInstructions.tsx";
-
 import "../styles/AIInterview.css";
 
 const AIIntroductionPage = () => {

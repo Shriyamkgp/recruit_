@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from "react";
-
 import { Link } from "react-router-dom";
-
 import Header from "../components/Header";
-
-// Import the centralized API service
-
 import * as RecruitApi from "@/api/RecruitApi";
 
-// --- Types ---
 
 interface Job {
   _id: string;
@@ -18,8 +12,6 @@ interface Job {
   companyName: string;
 
   location: string;
-
-  // Note: Added salary back as it is typically needed in job listings
 
   salary?: { min: number; max: number };
 }
@@ -34,7 +26,7 @@ interface Application {
   status: string;
 }
 
-// Assume the API response has a 'jobs' property
+
 
 interface JobsApiResponse {
   jobs: Job[];
@@ -51,13 +43,7 @@ const JobList = () => {
 
   const [userApplications, setUserApplications] = useState<Application[]>([]);
 
-  // Use the specific ID key from session storage as determined earlier
-
   const currentApplicantId = sessionStorage.getItem("applicantId");
-
-  // --- Data Fetching Effects ---
-
-  // 1. Fetch All Jobs
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -65,8 +51,6 @@ const JobList = () => {
         setLoading(true);
 
         setError(null);
-
-        // Use the centralized API function to fetch all jobs
 
         const responseData: JobsApiResponse = await RecruitApi.getAllJobs();
 
@@ -96,7 +80,6 @@ const JobList = () => {
   // 2. Fetch Current User's Applications
 
   useEffect(() => {
-    // Only fetch applications if an applicantId is available
 
     if (currentApplicantId) {
       const fetchApplications = async () => {
@@ -104,31 +87,22 @@ const JobList = () => {
           const applicationResponse =
             await RecruitApi.getApplicationsByApplicant(currentApplicantId);
 
-          // Assuming the API returns an object with an 'applications' array
-
           if (applicationResponse?.applications) {
             setUserApplications(applicationResponse.applications);
           }
         } catch (err) {
           console.error("Error fetching user applications:", err);
-
-          // Don't set error state, just log it, as jobs should still display.
         }
       };
 
       fetchApplications();
     }
 
-    // Note: setLoading(false) is intentionally in the job fetch effect,
-
-    // as the main page content depends on the jobs being loaded.
   }, [currentApplicantId]);
 
-  // Once both jobs and applications are potentially loaded, stop the main spinner.
 
   useEffect(() => {
-    if (!loading) return; // Only run once loading is pending
-
+    if (!loading) return; 
     if (jobs.length > 0 || error !== null) {
       setLoading(false);
     }

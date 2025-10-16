@@ -13,7 +13,6 @@ const Dictaphone = ({ onTranscriptChange }: AutoSpeechInputProps) => {
     useSpeechRecognition();
 
   const absoluteTimeoutRef = useRef<number | null>(null);
-
   const latestTranscriptRef = useRef(transcript);
 
   useEffect(() => {
@@ -23,14 +22,11 @@ const Dictaphone = ({ onTranscriptChange }: AutoSpeechInputProps) => {
   const stopAndReport = useCallback(
     (finalTranscript: string) => {
       console.log("Stopping speech to text");
-
       SpeechRecognition.stopListening();
-
       onTranscriptChange(finalTranscript, true);
 
       if (absoluteTimeoutRef.current !== null) {
         clearTimeout(absoluteTimeoutRef.current);
-
         absoluteTimeoutRef.current = null;
       }
     },
@@ -40,12 +36,9 @@ const Dictaphone = ({ onTranscriptChange }: AutoSpeechInputProps) => {
 
   useEffect(() => {
     if (!browserSupportsSpeechRecognition) return;
-
     console.log("Starting Dictaphone listening session...");
-
     SpeechRecognition.startListening({
       continuous: true,
-
       interimResults: true,
     });
 
@@ -57,12 +50,10 @@ const Dictaphone = ({ onTranscriptChange }: AutoSpeechInputProps) => {
 
     return () => {
       console.log("Cleaning up Dictaphone session...");
-
       SpeechRecognition.stopListening();
 
       if (absoluteTimeoutRef.current !== null) {
         clearTimeout(absoluteTimeoutRef.current);
-
         absoluteTimeoutRef.current = null;
       }
     };
