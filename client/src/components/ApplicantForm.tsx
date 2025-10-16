@@ -35,9 +35,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// --- API Logic ---
-
-// Helper to log the user in after successful registration
 async function LoginUser(email: string, password: string) {
   const API_URL = import.meta.env.VITE_API_URL;
   const registryData = { email, password };

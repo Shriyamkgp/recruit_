@@ -10,6 +10,7 @@ import JobDescription from "../pages/JobDescription";
 import JobList from "../pages/JobList";
 import Login from "../pages/Login";
 import Thankyou from "../pages/Thankyou";
+import CreateJob from "../pages/CreateJob";
 
 export const routes = [
   { path: "/", element: <Home />, ws: false },
@@ -30,4 +31,5 @@ export const routes = [
   { path: "/main-ai/:id", element: <AIInterview />, ws: true },
 
   { path: "/main-ai/thankyou", element: <Thankyou />, ws: false },
+  { path: "/hr/create_job", element: <CreateJob />, ws: false },
 ];
