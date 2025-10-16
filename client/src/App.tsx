@@ -1,9 +1,9 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { routes } from "./config/routes.jsx";
-import { WebSocketProvider } from "./components/webSockerContext";
+import { routes } from "./config/route";
+import { WebSocketProvider } from "./components/WebSocketContext";
 
-function App() {
+function AppRoutes() {
   return (
     <Routes>
       {routes.map((route: any, index: any) => (
@@ -11,7 +11,6 @@ function App() {
           key={index}
           path={route.path}
           element={
-            // Conditionally wrap the element
             route.ws === true ? (
               <WebSocketProvider>{route.element}</WebSocketProvider>
             ) : (
@@ -20,8 +19,13 @@ function App() {
           }
         />
       ))}
+      <Route path="*" element={<div>404 Page Not Found</div>} />
     </Routes>
   );
+}
+
+function App() {
+  return <AppRoutes />;
 }
 
 export default App;
