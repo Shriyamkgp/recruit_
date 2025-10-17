@@ -30,7 +30,7 @@ const formSchema = z.object({
   }),
   phone: z.string(),
   location: z.string().optional(),
-  job_designation: z.string(),
+  job_designation: z.string().optional(),
 });
 
 type HRFormValues = z.infer<typeof formSchema>;
@@ -51,10 +51,62 @@ export function HRForm() {
     },
   });
 
-  function onSubmit(values: HRFormValues) {
+  async function registerUser(reqbody: any) {
+    let response = undefined;
+    try {
+      response = await RecruitApi.registerUser(reqbody);
+    } catch (error) {
+      console.error("Error fetching job details:", error);
+    }
+    return response;
+  }
+
+  async function loginUser(reqbody: any) {
+    let response = undefined;
+    try {
+      response = await RecruitApi.loginUser(reqbody);
+    } catch (error) {
+      console.error("Error fetching job details:", error);
+    }
+    return response;
+  }
+
+  // Add API submission logic here to registering HR User
+  async function onSubmit(values: HRFormValues) {
     console.log("Form Submitted:", values);
-    // Add API submission logic here to register HR and upload job description
-    navigate("../hr/create_job");
+
+    const reqbody = {
+      name: values.fullName,
+      email: values.email,
+      password: values.password,
+      role: "hr",
+      profile: {
+        phone: values.phone,
+        location: "",
+        bio: "",
+      },
+    };
+
+    if (values.location) {
+      reqbody.profile.location = values.location;
+    }
+    if (values.job_designation) {
+      reqbody.profile.bio = values.job_designation;
+    }
+
+    let response = await registerUser(reqbody);
+    if (response) {
+      console.log(`Success: ${response._id}`);
+      sessionStorage.setItem("hrId", response._id);
+      let credentials = { email: values.email, password: values.password };
+      let status = await loginUser(credentials);
+      if (status) {
+        navigate("../hr/create_job");
+      }
+    } else {
+      console.log(`Unsuccessful`);
+    }
+    return response;
   }
 
   return (

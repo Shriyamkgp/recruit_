@@ -2,8 +2,9 @@ import axios from "axios";
 
 // --- Configuration & Utility Functions ---
 
+// The BASE_URL is updated to include '/v1' after '/api'
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1";
 
 /**
  * Utility function to get the current user's token.
@@ -41,7 +42,7 @@ apiClient.interceptors.request.use(
 // --- User Endpoints (Users) ---
 
 /**
- * POST /api/users/register
+ * POST /api/v1/users/register
  * @param {object} userData - { name, email, password, role, profile }
  */
 export async function registerUser(userData) {
@@ -54,7 +55,7 @@ export async function registerUser(userData) {
 }
 
 /**
- * POST /api/users/login
+ * POST /api/v1/users/login
  * @param {object} credentials - { email, password }
  */
 export async function loginUser(credentials) {
@@ -74,7 +75,7 @@ export async function loginUser(credentials) {
 }
 
 /**
- * GET /api/users
+ * GET /api/v1/users
  * @param {object} params - { role, page, limit, search }
  */
 export async function getAllUsers(params = {}) {
@@ -87,7 +88,7 @@ export async function getAllUsers(params = {}) {
 }
 
 /**
- * GET /api/users/check-email/:email
+ * GET /api/v1/users/check-email/:email
  * @param {string} email
  */
 export async function checkEmailExists(email) {
@@ -100,7 +101,7 @@ export async function checkEmailExists(email) {
 }
 
 /**
- * GET /api/users/:id
+ * GET /api/v1/users/:id
  * @param {string} userId
  */
 export async function getUserById(userId) {
@@ -113,7 +114,7 @@ export async function getUserById(userId) {
 }
 
 /**
- * PUT /api/users/:id
+ * PUT /api/v1/users/:id
  * @param {string} userId
  * @param {object} updateData - { name, email, profile: { phone, location, bio } }
  */
@@ -127,7 +128,7 @@ export async function updateUserProfile(userId, updateData) {
 }
 
 /**
- * PUT /api/users/:id
+ * PUT /api/v1/users/:id
  * @param {string} userId
  * @param {object} passwordData - { password }
  */
@@ -143,7 +144,7 @@ export async function updateUserPassword(userId, passwordData) {
 // --- Job Endpoints (Jobs) ---
 
 /**
- * POST /api/jobs
+ * POST /api/v1/jobs
  * @param {object} jobData - { title, description, requirements, skills, companyName, location, salary, hrId }
  */
 export async function createJob(jobData) {
@@ -156,7 +157,7 @@ export async function createJob(jobData) {
 }
 
 /**
- * GET /api/jobs
+ * GET /api/v1/jobs
  * @param {object} params - { status, skills, location, minSalary, maxSalary, page, limit }
  */
 export async function getAllJobs(params = {}) {
@@ -169,7 +170,7 @@ export async function getAllJobs(params = {}) {
 }
 
 /**
- * GET /api/jobs/:id
+ * GET /api/v1/jobs/:id
  * @param {string} jobId
  */
 export async function getJobById(jobId) {
@@ -182,7 +183,7 @@ export async function getJobById(jobId) {
 }
 
 /**
- * PUT /api/jobs/:id
+ * PUT /api/v1/jobs/:id
  * @param {string} jobId
  * @param {object} updateData - Partial job data to update
  */
@@ -196,7 +197,7 @@ export async function updateJob(jobId, updateData) {
 }
 
 /**
- * DELETE /api/jobs/:id
+ * DELETE /api/v1/jobs/:id
  * @param {string} jobId
  */
 export async function deleteJob(jobId) {
@@ -211,7 +212,7 @@ export async function deleteJob(jobId) {
 // --- Applicant Endpoints (Applicants) ---
 
 /**
- * POST /api/applicants
+ * POST /api/v1/applicants
  * Note: This endpoint expects 'form-data' with a 'resume' file.
  * @param {FormData} formData - Must contain 'userId', 'salaryExpectation', and 'resume' (File object)
  */
@@ -230,7 +231,7 @@ export async function createApplicantProfile(formData) {
 }
 
 /**
- * GET /api/applicants/:userId
+ * GET /api/v1/applicants/:userId
  * @param {string} userId
  */
 export async function getApplicantProfile(userId) {
@@ -243,7 +244,7 @@ export async function getApplicantProfile(userId) {
 }
 
 /**
- * PUT /api/applicants/:userId
+ * PUT /api/v1/applicants/:userId
  * @param {string} userId
  * @param {object} updateData - { salaryExpectation, structuredData }
  */
@@ -259,7 +260,7 @@ export async function updateApplicantProfile(userId, updateData) {
 // --- Application Endpoints (Applications) ---
 
 /**
- * POST /api/applications
+ * POST /api/v1/applications
  * @param {object} data - { jobId, applicantId }
  */
 export async function applyToJob(data) {
@@ -272,7 +273,7 @@ export async function applyToJob(data) {
 }
 
 /**
- * GET /api/applications/job/:jobId
+ * GET /api/v1/applications/job/:jobId
  * @param {string} jobId
  * @param {object} params - { status, page, limit }
  */
@@ -288,7 +289,7 @@ export async function getApplicationsByJob(jobId, params = {}) {
 }
 
 /**
- * GET /api/applications/applicant/:applicantId
+ * GET /api/v1/applications/applicant/:applicantId
  * @param {string} applicantId
  */
 export async function getApplicationsByApplicant(applicantId) {
@@ -303,7 +304,7 @@ export async function getApplicationsByApplicant(applicantId) {
 }
 
 /**
- * GET /api/applications/:id
+ * GET /api/v1/applications/:id
  * @param {string} applicationId
  */
 export async function getApplicationById(applicationId) {
@@ -316,7 +317,7 @@ export async function getApplicationById(applicationId) {
 }
 
 /**
- * POST /api/applications/:id/start-interview
+ * POST /api/v1/applications/:id/start-interview
  * @param {string} applicationId
  */
 export async function startInterview(applicationId) {
@@ -331,7 +332,7 @@ export async function startInterview(applicationId) {
 }
 
 /**
- * PUT /api/applications/:id/status
+ * PUT /api/v1/applications/:id/status
  * @param {string} applicationId
  * @param {object} data - { status: string }
  */
@@ -350,7 +351,7 @@ export async function updateApplicationStatus(applicationId, data) {
 // --- Report Endpoints (Reports) ---
 
 /**
- * GET /api/reports/application/:applicationId
+ * GET /api/v1/reports/application/:applicationId
  * @param {string} applicationId
  */
 export async function getReportByApplication(applicationId) {
@@ -365,7 +366,7 @@ export async function getReportByApplication(applicationId) {
 }
 
 /**
- * GET /api/reports/:reportId
+ * GET /api/v1/reports/:reportId
  * @param {string} reportId
  */
 export async function getReportById(reportId) {
@@ -378,7 +379,7 @@ export async function getReportById(reportId) {
 }
 
 /**
- * GET /api/reports/job/:jobId
+ * GET /api/v1/reports/job/:jobId
  * @param {string} jobId
  * @param {object} params - { sortBy, order, page, limit }
  */
@@ -392,7 +393,7 @@ export async function getReportsByJob(jobId, params = {}) {
 }
 
 /**
- * GET /api/reports/:reportId/transcript
+ * GET /api/v1/reports/:reportId/transcript
  * @param {string} reportId
  */
 export async function getInterviewTranscript(reportId) {
@@ -405,7 +406,7 @@ export async function getInterviewTranscript(reportId) {
 }
 
 /**
- * PUT /api/reports/:reportId/recommendation
+ * PUT /api/v1/reports/:reportId/recommendation
  * @param {string} reportId
  * @param {object} data - { recommendation, notes }
  */
@@ -422,7 +423,7 @@ export async function updateReportRecommendation(reportId, data) {
 }
 
 /**
- * GET /api/reports/job/:jobId/stats
+ * GET /api/v1/reports/job/:jobId/stats
  * @param {string} jobId
  */
 export async function getJobReportStatistics(jobId) {

@@ -63,7 +63,7 @@ export function LoginForm({
         if (loginApiResponse.role === "applicant") {
           navigate("/job/applicant");
         } else if (loginApiResponse.role === "hr") {
-          navigate("/hr/dashboard"); // Redirect HR users to a dashboard
+          navigate("/hr/posted-jobs"); // Redirect HR users to a dashboard
         } else {
           throw new Error("Login failed. Invalid user role.");
         }

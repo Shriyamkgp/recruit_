@@ -11,6 +11,8 @@ import JobList from "../pages/JobList";
 import Login from "../pages/Login";
 import Thankyou from "../pages/Thankyou";
 import CreateJob from "../pages/CreateJob";
+import PostedJob from "../pages/PostedJobs";
+import ViewCandiates from "../pages/ViewCandiates";
 
 export const routes = [
   { path: "/", element: <Home />, ws: false },
@@ -32,4 +34,10 @@ export const routes = [
 
   { path: "/main-ai/thankyou", element: <Thankyou />, ws: false },
   { path: "/hr/create_job", element: <CreateJob />, ws: false },
+  { path: "/hr/posted-jobs", element: <PostedJob />, ws: false },
+  {
+    path: "/hr/posted-jobs/view-candiates/:id",
+    element: <ViewCandiates />,
+    ws: false,
+  },
 ];

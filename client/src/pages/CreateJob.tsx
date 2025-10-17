@@ -1,5 +1,6 @@
 import React from "react";
+import { CreateJobForm } from "@/components/CreateJobForm";
 
 export default function CreateJob() {
-  return <div>Create Your Job Through This Page.</div>;
+  return <CreateJobForm />;
 }
