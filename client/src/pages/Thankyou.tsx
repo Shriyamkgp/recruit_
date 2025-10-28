@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import * as RecruitApi from "@/api/RecruitApi";
 
 import "../styles/Thankyou.css";
 
+import * as RecruitApi from "@/api/RecruitApi";
+
 const submitFeedback = async (
   applicationId: string,
-
   rating: number,
-
   comment: string
 ) => {
   console.log(
@@ -27,39 +27,28 @@ const Thankyou = () => {
   const applicationId = sessionStorage.getItem("applicationId");
 
   // --- Feedback State ---
-
   const [rating, setRating] = useState(0);
-
   const [comment, setComment] = useState("");
-
   const [isSubmitted, setIsSubmitted] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Clear interview-specific flags on mount
-
   useEffect(() => {
     localStorage.removeItem("startInterview");
   }, []);
 
   // --- Handlers ---
-
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!applicationId || isSubmitting || isSubmitted || rating === 0) return;
-
     setIsSubmitting(true);
 
     try {
       // API call to submit the feedback
-
       await submitFeedback(applicationId, rating, comment);
-
       setIsSubmitted(true);
     } catch (error) {
       console.error("Failed to submit feedback:", error);
-
       alert("Failed to submit feedback. Please try again later.");
     } finally {
       setIsSubmitting(false);
@@ -95,7 +84,6 @@ const Thankyou = () => {
       <div className="flex flex-col items-center justify-center min-h-svh p-4 bg-gray-50">
         <div className="max-w-xl w-full p-10 bg-white rounded-xl shadow-2xl text-center">
           <div className="text-6xl mb-6 text-green-500">🎉</div>
-
           <h1 className="text-3xl font-extrabold text-gray-800 mb-4">
             Interview Complete!
           </h1>

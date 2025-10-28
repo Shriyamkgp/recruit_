@@ -42,7 +42,7 @@ export interface StructuredResumeData {
 export class StructureResumeAgent {
   /**
    * Parse and structure resume text into structured data using AI
-   */
+  */
   static async parseResume(
     extractedText: string
   ): Promise<StructuredResumeData> {

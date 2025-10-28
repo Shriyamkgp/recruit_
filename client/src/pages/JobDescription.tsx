@@ -1,27 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as RecruitApi from "@/api/RecruitApi";
 import { JobDescriptionForm } from "@/components/JobDescriptionForm";
 import Header from "../components/Header";
 import "../styles/JobDescription.css";
 
-// --- Types ---
-
 interface JobDetailData {
   job: {
     _id: string;
-
     title: string;
-
     companyName: string;
-
     location: string;
-
     description: string;
-
     salary: {
       min: number;
-
       max: number;
     };
   };

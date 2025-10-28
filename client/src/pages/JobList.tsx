@@ -1,92 +1,69 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Header from "../components/Header";
-import * as RecruitApi from "@/api/RecruitApi";
 
+import Header from "../components/Header";
+
+import * as RecruitApi from "@/api/RecruitApi";
 
 interface Job {
   _id: string;
-
   title: string;
-
   companyName: string;
-
   location: string;
-
   salary?: { min: number; max: number };
 }
 
 interface Application {
   _id: string;
-
   jobId: string;
-
   applicantId: string;
-
   status: string;
 }
 
-
-
 interface JobsApiResponse {
   jobs: Job[];
-
   success: boolean;
 }
 
 const JobList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState<string | null>(null);
-
   const [userApplications, setUserApplications] = useState<Application[]>([]);
-
   const currentApplicantId = sessionStorage.getItem("applicantId");
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         setLoading(true);
-
         setError(null);
 
         const responseData: JobsApiResponse = await RecruitApi.getAllJobs();
-
         if (responseData && Array.isArray(responseData.jobs)) {
           setJobs(responseData.jobs);
         } else {
           setJobs([]);
-
           console.error(
             "API response did not contain expected job array.",
-
             responseData
           );
         }
       } catch (err) {
         console.error("Error fetching jobs:", err);
-
         setError("Failed to load available job postings.");
-
         setJobs([]);
       }
     };
-
     fetchJobs();
   }, []);
 
   // 2. Fetch Current User's Applications
-
   useEffect(() => {
-
     if (currentApplicantId) {
       const fetchApplications = async () => {
         try {
           const applicationResponse =
             await RecruitApi.getApplicationsByApplicant(currentApplicantId);
-
           if (applicationResponse?.applications) {
             setUserApplications(applicationResponse.applications);
           }
@@ -94,15 +71,12 @@ const JobList = () => {
           console.error("Error fetching user applications:", err);
         }
       };
-
       fetchApplications();
     }
-
   }, [currentApplicantId]);
 
-
   useEffect(() => {
-    if (!loading) return; 
+    if (!loading) return;
     if (jobs.length > 0 || error !== null) {
       setLoading(false);
     }
@@ -142,16 +116,13 @@ const JobList = () => {
   return (
     <>
       <Header />
-
       <div className="p-4 md:p-10 max-w-6xl mx-auto">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-8 border-b pb-2 text-center">
           Available Job Opportunities
         </h1>
-
         <ul className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {jobs.map((job: Job) => {
             const appliedApplication = checkApplicationStatus(job._id);
-
             const jobCardContent = (
               <div className="job-list-item bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col justify-between h-full">
                 <div>
@@ -163,7 +134,6 @@ const JobList = () => {
                     >
                       💼
                     </span>
-
                     <h2 className="text-xl font-bold text-gray-900 leading-tight">
                       {job.title}
                     </h2>
@@ -180,7 +150,6 @@ const JobList = () => {
                   </p>
 
                   {/* Optional: Display salary if available and typed */}
-
                   {job.salary && (
                     <p className="text-sm font-medium text-indigo-700 mb-4">
                       ${job.salary.min.toLocaleString()} - $
@@ -191,7 +160,6 @@ const JobList = () => {
 
                 <div className="pt-4 border-t border-gray-100 mt-auto">
                   {/* Conditional Button Logic */}
-
                   {appliedApplication ? (
                     <Link to={`/ai-interview/${job._id}`}>
                       <button
@@ -199,7 +167,6 @@ const JobList = () => {
                         onClick={() => {
                           sessionStorage.setItem(
                             "applicationId",
-
                             appliedApplication._id
                           );
                         }}
@@ -217,7 +184,6 @@ const JobList = () => {
                 </div>
               </div>
             );
-
             return <li key={job._id}>{jobCardContent}</li>;
           })}
         </ul>

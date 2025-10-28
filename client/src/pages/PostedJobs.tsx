@@ -1,6 +1,5 @@
 // PostedJobs.tsx
-
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -55,28 +54,28 @@ export function PostedJobs() {
       setLoading(false);
       return;
     }
-
     setLoading(true);
+
     try {
-      // Fetch all jobs (or jobs filtered by HR ID if the API supports it)
       const response = await RecruitApiSecured.getAllJobs();
-      // 2. CORE CORRECTION: Client-side filtering using the retrieved ID
-      //    This checks if the 'hrId' property on the job object matches the 'currentHrId' from storage.
+
       const postedJobs = response.jobs.filter(
         (job: Job) => job.hrId._id === currentHrId
       );
+    
       console.log(`PostedJobs: ${postedJobs}`);
-
       setJobs(postedJobs);
     } catch (error) {
+
       console.error("Error fetching posted jobs:", error);
       toast.error("Failed to load job listings.", {
         description: "Please check your network connection.",
-      });
+      }
+    );
     } finally {
       setLoading(false);
     }
-  }, [currentHrId]); // Dependency on currentHrId
+  }, [currentHrId]);
 
   useEffect(() => {
     fetchPostedJobs();
@@ -135,7 +134,6 @@ export function PostedJobs() {
       <div className="max-w-6xl mx-auto p-4 sm:p-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-4xl font-bold text-gray-900">Your Posted Jobs</h2>
-
           <Button
             onClick={() => navigate("/hr/create_job")}
             className="bg-indigo-600 hover:bg-indigo-700 transition duration-200 flex items-center space-x-2"
